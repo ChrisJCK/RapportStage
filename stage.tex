@@ -1,12 +1,157 @@
-\section{Le stage}
+\chapter{Les travaux effectuées et les apports du stage}
+Au cours de ce stage, j'ai découvert le métier de consultant IT. 
+C'est un métier varié.
+Les clients possédant chacun leur business, les problèmes qu'ils rencontrent ne sont jamais identique.
+Il faut donc maitriser des connaissances dans plusieurs domaines et à plusieurs niveaux.
 
-\subsection{Réalisation}
-Ma première étape a été de mettre à jour le laboratoire de l'entreprise.
-Des nouveaux serveurs devaient être installés, et les anciens enlevées.
+\section{Travaux effectuées}
+Au cours de mon stage, j'ai travaillé essentiellement sur l'architecture d'un laboratoire de test et sur les connaissances relatives aux firewalls, passerelle SSL, tunnel VPN.
 
-Avec un collègue, nous avons réalisé un schéma des racks en tenant compte du nouveau matériel et de la hauteur des unités.
-Nous avons choisi de ranger les serveurs dans le premier rack et les équipements de communication dans le deuxième rack. 
+\subsection{Architecture du laboratoire}
+Le laboratoire est assez complet d'un point de vue matériel. 
+Il est composé d'une quinzaine de serveurs dont des NAS, de plusieurs switchs, de multiples routeurs et firewalls et de PDU.
+Je met une liste du matériel hardware
+\begin{itemize}
+	\item Serveurs HP Proliant DL360 et DL380
+	\item Switch Cisco 3560G, 2960G, 2950
+	\item Firewall Juniper NS25, SSG140
+	\item Passerelle SSL SA2500
+\end{itemize}
+et une liste des systèmes d'exploitation et software sur lesquelles j'ai travaillé
+\begin{itemize}
+	\item Windows Server 2008R2, 2012 et 2012R2
+	\item Windows Client Vista, 7, 8 Professional et Enterprise
+	\item ESXi 5.5
+	\item ScreenOS 6.3r12
+	\item JunOS 8.1r1.1
+	\item Exchange 2013
+	\item Office 2013
+\end{itemize}
 
-Une fois les serveurs déplacés, j'ai recâblé ces derniers aussi bien au niveau de l'alimentation, que du réseau en suivant les bonnes pratique de "cable management".
-De plus, chaque serveur est administrable via un session KVM.
-Il a donc fallu penser aussi à gérer ces câbles de manière optimales.
+\subsubsection{Partie Hardware}
+Dans un premier temps, un collègue m'a présenté le schéma logique du nouveau plan du laboratoire.
+Sur base de ce plan, j'ai commencé à chercher des informations sur les technologies que je ne connaissais pas (iSCSI, ScreenOS, ...).
+Ce plan prévoyait la création de deux sous-réseau à l'intérieur du réseau de laboratoire.
+Pour créer ces sous-réseaux, nous avons configuré deux firewalls NetScreen 25 de Juniper. 
+
+Avant de commencer cette partie, nous devions d'abord enlever les anciens serveurs, récupérer les nouveaux serveurs et faire un plan pour la disposition des serveurs dans le rack.
+Nous disposons de trois racks de quarante-deux (42) unités de haut. 
+En analysant les équipements à notre disposition, nous avons décidé de placer tout les serveurs dans le premier rack, les équipements réseau (firewalls, routeurs, passerelle SSL, switch, ...) dans le deuxième rack. 
+
+Pour établir la disposition exacte des serveurs, j'ai relevé les composants de tous les serveurs.
+J'ai pris note du nombre de cœurs physiques, de la quantité de RAM ainsi que de la disposition des barettes sur les slots de RAM.
+Pour les disques durs, j'ai regardé au RAID formé, ainsi que la capacité de chaque disque.
+
+Ensuite, nous avons classé les serveurs du plus puissant au moins performants. 
+Les six serveurs les plus puissants sont configurés comme host de machine virtuelle. 
+Quatre tournent sous Windows 2012R2 Datacenter avec le rôle Hyper-V et les deux autres tournent sous ESXi 5.5.
+Parmi les autres serveurs, nous en avons choisi un pour faire tourner le service WSUS (Windows Server Update Services) uniquement sur un Windows Server 2012R2. 
+Ce service permet de mettre à jour toutes les machines Windows qui s'y connectent.
+Il télécharge les mises à jour depuis le serveur de Microsoft et est capable de les déployer sur les machines locales.
+Cet outil est utile quand il y a beaucoup de machines sur le réseau à mettre à jour. 
+
+Pour les serveurs, les manipulations étaient simples. 
+Il nous suffisait de débrancher tous les câbles du serveur.
+Ensuite de l'enlever des rails et d'enlever ces derniers du rack pour récupérer l'espace.
+Pour placer les nouveaux, nous placions le rail en premier, puis le serveur dessus.
+Le câblage des serveurs s'est fait un peu plus tard, car nous devions vérifier le nombre de connectique réseau. 
+
+En effet, nous avons crée des EtherChannel quand c'était possible. 
+Nous avons besoin d'une grande bande passante entre nos serveurs et nos NAS (Network-Attached Storage) pour réduire les temps de transfert des VM (Virtual Machines).
+Nous stockons les VMs sur les NAS, et chaque serveur possède une connexion iSCSI vers une iSCSI Target. 
+L'avantage d'utiliser Windows 2012 R2 est que le NIC Teaming peut se faire via le Server Manager alors que dans les anciennes versions, il fallait utiliser le software du fabricant.
+
+Pour la câblage, j'ai utilisé les bonnes pratiques en "cable management", c'est-à-dire que tous les câbles sont étiquetés aux deux extrémités.
+J'ai essayé de respecter un code couleur, mais je suis tombé à cours de câble de la bonne couleur.
+J'ai utilisé les différentes couleurs suivantes :
+\begin{itemize}
+	\item jaunes et vert : connexion réseau des serveurs
+	\item bleu : connexion console/KVM
+	\item rouge et gris : EtherChannel entre les switchs
+\end{itemize}
+J'ai essayé d'employer des câbles de bonne longueurs, c'est-à-dire pas mettre des câbles trop long pour des courtes distances et pas utiliser des câbles trop juste, ce qui pourrait endommager les connecteurs.
+
+Un switch KVM (Keyboard, video and mouse) est installé dans le rack.
+Il nous permet de contrôler un serveur à distance comme si nous étions dessus en physique.
+Il simule le clavier, l'écran et la souris sur le serveur. 
+
+Pour les alimentations, j'ai suivi les règles de bonnes pratique en ne les mélangeant pas avec les cables réseau.
+Dans le cas où un serveur à deux alimentations, ne pas mettre les deux alimentations sur la même multi-prise.
+Dans les racks, je disposais de deux PDU verticaux. 
+Ces PDU sont manageables sur le réseau. 
+A tout instant, il est possible de voir la consommation du PDU, d'éteindre ou d'allumer un prise.
+
+\subsubsection{Partie software}
+Comme dit au point précédent, certains serveurs sont des hotes pour des VMs.
+J'ai donc installé des serveurs Windows 2012 R2, ainsi que des ESXi 5.5.
+
+Drivers
+
+Sur base du classement, j'ai aussi défini le plan d'adressage des serveurs (voir Tab.\ref{tab:addIP} p.\pageref{tab:addIP}).
+Même si la plupart des serveurs possèdent plusieurs cartes réseaux, ils n'ont qu'une seule adresse IP attribuée.
+Car nous avons utilisé du NIC Teaming pour regrouper les interfaces physiques en un seul interface logique.
+Il y a juste les serveurs ESXi qui ont deux adresses IP : la première sert au management et la deuxième permet les connexions iSCSI.
+\begin{table}
+\centering
+\begin{tabular}{cc}
+\toprule
+Nom du serveur & Adresse IP \\
+\midrule
+HV-01 & 192.168.6.10 \\ 
+HV-02 & 192.168.6.11 \\ 
+ESXi-01 & 192.168.6.12 (Mgmt) - 192.168.6.21 (iSCSI) \\ 
+ESXi-02 & 192.168.6.13 (Mgmt) - 192.168.6.20 (iSCSI) \\ 
+HV-03 & 192.168.6.14 \\ 
+HV-04 & 192.168.6.15 \\ 
+WSUS & 192.168.6.16 \\ 
+HP-NAS-01 & 192.168.6.17 \\ 
+HP-NAS-02 & 192.168.6.18 \\ 
+HP-NAS-03 & 192.168.6.19 \\
+\bottomrule
+\end{tabular}
+\caption{Adressage des serveurs du laboratoire}
+\label{tab:addIP}
+\end{table}
+
+
+\section{Apports du stage}
+J'ai appris énormément de chose pendant ces quatorze semaines de stage aussi bien d'un point de vue technique que humain.
+
+\subsection{Compétences théorique acquises}
+L'apprentissage des technologies passe par une phase d'étude, puis par la pratique.
+J'ai passé un certain temps à étudier le fonctionnement de divers protocoles liés à la sécurité des données tels que IPSec et SSL/TLS.
+De plus, j'ai du m'habituer au terme technique utilisé au sein de la société.
+Je sais maintenant expliquer un problème technique avec les termes adéquats à un collègue.
+
+\subsection{Compétences techniques acquises}
+Lors de ce stage, j'ai appris à installer des serveurs en suivant de bonnes pratiques, à designer un laboratoire en respectant les règles de "cable management", à configurer des firewalls, des switchs, des passerelles SSL. 
+
+Une infrastructure professionnelle en Windows possède au minimum un serveur Active Directory (AD) avec le rôle Domain Controller (DC) et un serveur Exchange. 
+L'utilisation d'Exchange requiert l'utilisation de certificat, il est donc nécessaire d'ajouter le rôle Certificate Services (CS) à l'AD.
+
+La gestion des certificats est un peu complexe d'un premier abord.
+Un collègue a pris le temps de m'expliquer le rôle d'une autorité de certification (CA) et comment créer une requête pour un serveur auprès du CA. 
+
+iSCSI
+
+Virtual Router
+
+Passerelle SSL 
+
+Policies
+
+EtherChannel/NIC Teaming
+
+MIP
+
+
+Une partie des ces connaissances m'a été utile pour mon travail de fin d'études. 
+\subsection{La vie en société}
+Travailler dans une PME a des avantages pour les relations humaines.
+Il est en effet plus facile de discuter avec l'ensemble des employées.
+
+Au début, j'avais un collègue qui servait de point de contact lorsque j'avais une question.
+Mais le métier de consultant implique de se déplacer soit chez un client, soit dans un centre de formation, soit en urgence.
+Il est arrivé que ce collègue part en milieu de journée ou qu'il soit absent une semaine complète pour donner un cours.
+Au lieu de perdre mon temps, j'ai demandé des conseils aux autres collègues présent au bureau. 
+

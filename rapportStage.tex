@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
 \usepackage[T1]{fontenc}
@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage{booktabs}
 
 %----------------------------------------------------------------------------------------
 %Mise en page
@@ -20,8 +21,11 @@
 
 \begin{document}
 \input{cover}
+\input{remerciements}
 \tableofcontents
+\thispagestyle{empty}
 \clearpage
+\setcounter{page}{1}
 \include{introduction}
 \input{presentation}
 \input{stage}
