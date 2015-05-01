@@ -126,7 +126,26 @@ Une fois les systèmes d'exploitation installés et les adresses configurées, t
 Nous avons installé les rôles Hyper-V sur les quatre serveurs dédiés, et nous avons configuré les iSCSI Initiator. 
 Il en va de même pour les deux serveurs ESXi.
 
-\subsection{•}
+Finalement, nous avons vérifié le fonctionnement des machines, d'un point de vue réseau, en vérifiant que les pings entre tous les serveurs passaient. 
+
+
+\subsection{Règlage du WSUS}
+Le serveur WSUS fonctionnait correctement.
+Mais pour le rendre accessible aux machines, nous avons dû modifier une valeur du registre windows.
+Cette modification a pour but d'obliger la machine à contacter le serveur WSUS interne plutôt que le serveur Microsoft. 
+
+\subsection{Templates Windows}
+Il m'a été demandé de créer des \textit{templates} des systèmes d'exploitations.
+Ces \textit{templates} ont pour objectif de fournir des systèmes pré-installés que nous pouvons déployer directement.
+
+La création de ces derniers est simple. 
+Il suffit de posséder une image du système d'exploitation.
+Ensuite, nous démarrons la VM pour l'installation de base. 
+Dès que le système est installé, nous avons appliqué toutes les mises à jour requises depuis le serveur WSUS. 
+Finalement, nous avons exécuté la commande \texttt{sysprep} dans le \textit{cmd}.
+Cette commande modifie des valeurs uniques créées par le système.
+Par exemple, deux serveurs issus du même \textit{template} sans avoir lancé la commande \texttt{sysprep} ne peuvent pas être dans le même domaine, car ils possèdent le même identifiant. 
+
 
 \section{Apports du stage}
 J'ai appris énormément de chose pendant ces quatorze semaines de stage aussi bien d'un point de vue technique que humain.
@@ -139,20 +158,34 @@ Je sais maintenant expliquer un problème technique avec les termes adéquats à
 
 \subsection{Compétences techniques acquises}
 Lors de ce stage, j'ai appris à installer des serveurs en suivant de bonnes pratiques, à designer un laboratoire en respectant les règles de "cable management", à configurer des firewalls, des switchs, des passerelles SSL. 
-
+\subsubsection{Infrastrucutre Windows}
 Une infrastructure professionnelle en Windows possède au minimum un serveur Active Directory (AD) avec le rôle Domain Controller (DC) et un serveur Exchange. 
 L'utilisation d'Exchange requiert l'utilisation de certificat, il est donc nécessaire d'ajouter le rôle Certificate Services (CS) à l'AD.
 
 La gestion des certificats est un peu complexe d'un premier abord.
 Un collègue a pris le temps de m'expliquer le rôle d'une autorité de certification (CA) et comment créer une requête pour un serveur auprès du CA. 
 
-iSCSI
+Pour le stockage entre les serveurs et les NAS, la meilleur solution consiste à utiliser des disques iSCSI.
+La nomenclature iSCSI est assez lourde, mais son fonctionnement est simple. 
+Il suffit de créer un espace de stockage dynamique ou statique que l'on associe comme iSCSI Target. 
+Ensuite, les clients, appelés iSCSI Initiator, se connectent aux disques cibles. 
+Selon les autorisations, l'accès est accepté ou refusé.
+L'avantage d'un disque iSCSI est qu'il est visible par le système d'exploitation de la même façon qu'un disque local. 
 
-Virtual Router
+\subsubsection{Firewall Juniper}
+Une notion essentielle de la gestion des firewalls Juniper est celle de Virtual Router.
+Dans un firewall Juniper, les zones de confiances et les zones de non-confiances sont isolées l'une de l'autre.
+C'est comme si on avait deux routeurs connectés l'un à l'autre dont l'un distribue les routes pour la zone de confiance et l'autre fait de même pour les zones de non-confiances.
+Pour que du trafic passe entre les deux routeurs, les routes doivent être configurées manuellement.
 
+En plus des routes, les firewalls se basent sur l'utilisation de Policies pour filtrer le trafic.
+Les policies fonctionnent soit avec des adresses IP, soit avec des objets. 
+Il est conseillé d'utiliser les objets, car ils masquent les adresses IP associées. 
+Ainsi, lors d'un changement d'adressage, il suffit de modifier les propriétés de l'objet plutôt que d'aller modifier toutes les policies impactées.
+\subsubsection{Passerelle SSL}
 Passerelle SSL 
 
-Policies
+
 
 EtherChannel/NIC Teaming
 
