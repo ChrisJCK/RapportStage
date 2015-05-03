@@ -1,16 +1,35 @@
 \chapter{Les travaux effectuées et les apports du stage}
-Au cours de ce stage, j'ai découvert le métier de consultant IT. 
-C'est un métier varié.
+Au cours de ce stage, j'ai découvert le métier de consultant IT.
+C'est un métier passionnant et varié.
+Il requiert des capacités polyvalentes, un savoir-faire et de la flexibilité.
+
 Les clients possédant chacun leur business, les problèmes qu'ils rencontrent ne sont jamais identique.
 Il faut donc maitriser des connaissances dans plusieurs domaines et à plusieurs niveaux.
 Avant d'être opérationnel, il faut posséder des connaissances théoriques et pratiques en infrastructure réseaux, en systèmes d'information.
 
-\section{Travaux effectuées}
-Au cours de mon stage, j'ai travaillé essentiellement sur l'architecture d'un laboratoire de test et sur les connaissances relatives aux firewalls, passerelle SSL, tunnel VPN.
+Certaines opérations ne peuvent se faire qu'en dehors des heures de bureaux, il est nécessaire de travailler parfois plus tard ou le weekend. 
+D'autres ne se font que chez le client, il faut se déplacer jusque chez ce dernier.
 
-\subsection{Architecture du laboratoire}
+En cas d'urgence ou d'incident grave, il faut être prêt à partir pour résoudre le problème du client. 
+
+\section{Travaux effectuées}
+Au cours de mon stage, mon travail a consisté essentiellement à réaliser l'architecture d'un laboratoire de test et à l'étude des connaissances relatives aux firewalls, passerelle SSL, tunnel VPN.
+
+\subsection{Architecture du laboratoire de test}
+Le laboratoire de la société permet aux employées de tester des nouvelles fonctionnalités, de simuler l'infrastructure d'un client afin de résoudre un problème, de configurer les machines à livrer à un client.
+Sa disponibilité est capitale pour l'entreprise.
+
+Le laboratoire possédait de vieux serveurs, qui n'étaient plus ou peu utilisés par manque de performance.
+Les consultants travaillaient essentiellement avec cinq serveurs.
+Ces serveurs faisait tourner un système d'exploitation à la fois.
+Il n'était pas évident de créer une infrastructure complète.
+
+Avec l'arrivée des nouveaux serveurs plus récent, l'utilisation du laboratoire est plus intéressante.
+Il est désormais possible de créer une infrastructure complète en virtuel.
+
+\subsubsection{Matériel mis à disposition}
 Le laboratoire est assez complet d'un point de vue matériel. 
-Il est composé d'une quinzaine de serveurs dont des NAS, de plusieurs switchs, de multiples routeurs et firewalls et de PDU.
+Il est composé d'une quinzaine de serveurs dont des NAS, de plusieurs switchs, de multiples routeurs et firewalls, et de PDU (Power Distribution Unit).
 Je met une liste du matériel hardware
 \begin{itemize}
 	\item Serveurs HP Proliant DL360 et DL380
@@ -29,64 +48,68 @@ et une liste des systèmes d'exploitation et software sur lesquelles j'ai travai
 	\item Office 2013
 \end{itemize}
 
-\subsubsection{Partie Hardware}
+\subsubsection{Design du laboratoire}
 Dans un premier temps, un collègue m'a présenté le schéma logique du nouveau plan du laboratoire.
-Sur base de ce plan, j'ai commencé à chercher des informations sur les technologies que je ne connaissais pas (iSCSI, ScreenOS, ...).
+Sur base de ce plan, nous avons exploré l'ensemble des technologies à mettre en place.
 Ce plan prévoyait la création de deux sous-réseau à l'intérieur du réseau de laboratoire.
 Pour créer ces sous-réseaux, nous avons configuré deux firewalls NetScreen 25 de Juniper. 
+Il prévoyait également des connexions iSCSI entre les serveurs et les disque virtuels de stockage sur les NAS.
 
-Avant de commencer cette partie, nous devions d'abord enlever les anciens serveurs, récupérer les nouveaux serveurs et faire un plan pour la disposition des serveurs dans le rack.
-Nous disposons de trois racks de quarante-deux (42) unités de haut. 
-En analysant les équipements à notre disposition, nous avons décidé de placer tout les serveurs dans le premier rack, les équipements réseau (firewalls, routeurs, passerelle SSL, switch, ...) dans le deuxième rack. 
+Le laboratoire est composé de quatre racks, le rack 4 est réservé aux connexions vers la salle de production et vers l'open-space.
+Nous avons décidé de placer les serveurs dans le rack 1 et la matériel réseau dans le rack 2.
+Le rack 3 contient des Access Point pour le labo et accueille une solution Voice de Cisco depuis peu.
 
-Pour établir la disposition exacte des serveurs, j'ai relevé les composants de tous les serveurs.
-J'ai pris note du nombre de cœurs physiques, de la quantité de RAM ainsi que de la disposition des barettes sur les slots de RAM.
-Pour les disques durs, j'ai regardé au RAID formé, ainsi que la capacité de chaque disque.
+\subsubsection{(Dés)Installation des serveurs}
+Nous avons commencé par enlever les anciens serveurs.
+Ensuite, nous avons récupéré les nouveaux serveurs, que nous avons entreposé en attendant un plan détaillé de la localisation de ces derniers.
+
+Pour établir la disposition exacte des serveurs, nous avons relevé les composants de tous les serveurs.
+Nous avons pris note du nombre de cœurs physiques, de la quantité de RAM ainsi que de la disposition des slots de RAM.
+Pour les disques durs, nous avons regardé au RAID formé, ainsi que la capacité de chaque disque.
 
 Ensuite, nous avons classé les serveurs du plus puissant au moins performants. 
 Les six serveurs les plus puissants sont configurés comme host de machine virtuelle. 
 Quatre tournent sous Windows 2012R2 Datacenter avec le rôle Hyper-V et les deux autres tournent sous ESXi 5.5.
-Parmi les autres serveurs, nous en avons choisi un pour faire tourner le service WSUS (Windows Server Update Services) uniquement sur un Windows Server 2012R2. 
+Parmi les autres serveurs, nous en avons choisi un pour faire tourner uniquement le service WSUS (Windows Server Update Services) sur un Windows Server 2012R2. 
 Ce service permet de mettre à jour toutes les machines Windows qui s'y connectent.
 Il télécharge les mises à jour depuis le serveur de Microsoft et est capable de les déployer sur les machines locales.
 Cet outil est utile quand il y a beaucoup de machines sur le réseau à mettre à jour. 
 
+\subsubsection{Connexion des serveurs}
 Pour les serveurs, les manipulations étaient simples. 
 Il nous suffisait de débrancher tous les câbles du serveur.
 Ensuite de l'enlever des rails et d'enlever ces derniers du rack pour récupérer l'espace.
 Pour placer les nouveaux, nous placions le rail en premier, puis le serveur dessus.
 Le câblage des serveurs s'est fait un peu plus tard, car nous devions vérifier le nombre de connecteur réseau. 
 
-En effet, nous avons crée des EtherChannel quand c'était possible. 
+En effet, nous avons crée des EtherChannel quand c'était possible.
+Pour créer les EtherChannel, nous avons configuré le NIC Teaming sur les serveurs en mode LDAP.
+Nous avons aussi configuré les ports sur le switch afin de gérer les EtherChannel.
+ 
 Nous avons besoin d'une grande bande passante entre nos serveurs et nos NAS (Network-Attached Storage) pour réduire les temps de transfert des VM (Virtual Machines).
 Nous avons profité du fait que le switch principal a tous ses ports en gigabit. 
 Ainsi, nous avons au minimum 1Gbps de vitesse de transfert et grâce au EtherChannel, nous montons jusqu'à 4Gbps.
-Nous stockons les VMs sur les NAS, et chaque serveur possède une connexion iSCSI vers une iSCSI Target. 
+Nous stockons les VMs sur les NAS, et chaque serveur possède une connexion iSCSI vers un iSCSI Target. 
 
 L'avantage d'utiliser Windows 2012 R2 est que le NIC Teaming peut se faire via le Server Manager alors que dans les anciennes versions, il fallait utiliser le software du fabricant.
 
-Pour la câblage, j'ai utilisé les bonnes pratiques en "cable management", c'est-à-dire que tous les câbles sont étiquetés aux deux extrémités.
-J'ai essayé de respecter un code couleur, mais je suis tombé à cours de câble de la bonne couleur.
-J'ai utilisé les différentes couleurs suivantes :
-\begin{itemize}
-	\item jaunes et vert : connexion réseau des serveurs
-	\item bleu : connexion console/KVM
-	\item rouge et gris : EtherChannel entre les switchs
-\end{itemize}
-J'ai essayé d'employer des câbles de bonne longueurs, c'est-à-dire pas mettre des câbles trop long pour des courtes distances et pas utiliser des câbles trop juste, ce qui pourrait endommager les connecteurs.
 
+Pour la câblage, nous avons utilisé les bonnes pratiques en "cable management" :  
+\begin{itemize}
+\item Tous les câbles sont étiquetés aux deux extrémités
+\item Utilisation d'un code couleur pour les différents types de câbles
+\item Séparation physique entre les câbles Ethernet et les câbles d'alimentation
+\item Emploi de câbles de bonnes longueurs
+\end{itemize}
+
+\subsubsection{Switch KVM}
 Un switch KVM (Keyboard, video and mouse) est installé dans le rack.
 Il nous permet de contrôler un serveur à distance comme si nous étions dessus en physique.
 Il simule le clavier, l'écran et la souris sur le serveur. 
 
-Pour les alimentations, j'ai suivi les règles de bonnes pratique en ne les mélangeant pas avec les cables réseau.
-Dans le cas où un serveur à deux alimentations, ne pas mettre les deux alimentations sur la même multi-prise.
-Dans les racks, je disposais de deux PDU verticaux. 
-Ces PDU sont manageables sur le réseau. 
-A tout instant, il est possible de voir la consommation du PDU, d'éteindre ou d'allumer un prise.
-
-Par la suite, j'ai participé à l'installation du laboratoire Voice.
-Ce laboratoire est composé d'un serveur, de six routeurs et six switchs.
+\subsubsection{Solution Voice}
+Par la suite, nous avons reçu un solution complète de Voice.
+Cette solution est composée d'un serveur, de six routeurs et six switchs.
 Il permet de créer une infrastructure Voice d'une entreprise.
 
 \subsubsection{Partie software}
@@ -96,6 +119,11 @@ J'ai donc installé des serveurs Windows 2012 R2, ainsi que des ESXi 5.5.
 Les serveurs n'étant plus à jour, une mise à jour des drivers était nécessaire surtout pour les machines passant à un Windows Server 2012R2.
 Les mises à jour ont été effectuées à l'aide d'une WebApp de HP.
 
+Le laboratoire ne gère pas les domaines Active Directory, car son fonctionnement n'est pas compatible avec l'utilisation que l'on fait du labo. 
+Les machines que nous installons, en virtuel ou physiquement, ont des durées de vie limitées.
+Elles restent active entre une semaine et un mois.
+
+\subsubsection{Plan d'adressage}
 Sur base du classement, j'ai aussi défini le plan d'adressage des serveurs (voir Tab.\ref{tab:addIP} p.\pageref{tab:addIP}).
 Même si la plupart des serveurs possèdent plusieurs cartes réseaux, ils n'ont qu'une seule adresse IP attribuée.
 En effet, nous avons utilisé du NIC Teaming pour regrouper les interfaces physiques en un seul interface logique.
@@ -183,13 +211,20 @@ Les policies fonctionnent soit avec des adresses IP, soit avec des objets.
 Il est conseillé d'utiliser les objets, car ils masquent les adresses IP associées. 
 Ainsi, lors d'un changement d'adressage, il suffit de modifier les propriétés de l'objet plutôt que d'aller modifier toutes les policies impactées.
 \subsubsection{Passerelle SSL}
-Passerelle SSL 
+Une passerelle SSL gère les connexions distantes.
+Elle dispose d'un ensemble de règles d'authentification et d'accès pour autoriser ou non une connexion distante.
+ 
+\subsubsection{EtherChannel}
+L'EtherChannel permet d'assembler d'un point de vue logique plusieurs ports d'un switch pour n'en former qu'un.
+L'un des avantages est une plus grande bande passante, car chaque lien est indépendant de l'autre.
+Ainsi, le système peut utiliser tous les liens pour l'envoi de données ou la réception ou faire un mix entre les deux en fonction de la charge. 
 
 
+\subsubsection{NIC Teaming}
+Le NIC Teaming permet de coupler plusieurs carte réseau en une seule.
 
-EtherChannel/NIC Teaming
+\subsubsection{MIP}
 
-MIP
 
 
 Ces connaissances m'ont été utile pour mon travail de fin d'études. 
