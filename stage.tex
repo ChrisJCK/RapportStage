@@ -12,6 +12,9 @@ D'autres ne se font que chez le client, il faut se déplacer jusque chez ce dern
 
 En cas d'urgence ou d'incident grave, il faut être prêt à partir pour résoudre le problème du client. 
 
+Pour des raisons propres à l'entreprise, il ne m'a pas été possible de travailler directement avec les clients.
+Mais en me plaçant dans l'open space avec les consultants, il m'a été donné l'opportunité d'observer le travail de ces derniers dans la résolution des incidents.
+
 \section{Travaux effectuées}
 Au cours de mon stage, mon travail a consisté essentiellement à réaliser l'architecture d'un laboratoire de test et à l'étude des connaissances relatives aux firewalls, passerelle SSL, tunnel VPN.
 
@@ -83,7 +86,7 @@ Pour placer les nouveaux, nous placions le rail en premier, puis le serveur dess
 Le câblage des serveurs s'est fait un peu plus tard, car nous devions vérifier le nombre de connecteur réseau. 
 
 En effet, nous avons crée des EtherChannel quand c'était possible.
-Pour créer les EtherChannel, nous avons configuré le NIC Teaming sur les serveurs en mode LDAP.
+Pour créer les EtherChannel, nous avons configuré le NIC Teaming sur les serveurs en mode LACP.
 Nous avons aussi configuré les ports sur le switch afin de gérer les EtherChannel.
  
 Nous avons besoin d'une grande bande passante entre nos serveurs et nos NAS (Network-Attached Storage) pour réduire les temps de transfert des VM (Virtual Machines).
@@ -128,6 +131,7 @@ Sur base du classement, j'ai aussi défini le plan d'adressage des serveurs (voi
 Même si la plupart des serveurs possèdent plusieurs cartes réseaux, ils n'ont qu'une seule adresse IP attribuée.
 En effet, nous avons utilisé du NIC Teaming pour regrouper les interfaces physiques en un seul interface logique.
 Il y a juste les serveurs ESXi qui ont deux adresses IP : la première sert au management et la deuxième permet les connexions iSCSI.
+Cette séparation n'est pas nécessaire, mais elle est conseillée.
 \begin{table}
 \centering
 \begin{tabular}{cc}
@@ -151,11 +155,14 @@ HP-NAS-03 & 192.168.6.19 \\
 \end{table}
 
 Une fois les systèmes d'exploitation installés et les adresses configurées, tous les serveurs sont accessibles en remote. 
+
+\subsection{Rôles des serveurs}
 Nous avons installé les rôles Hyper-V sur les quatre serveurs dédiés, et nous avons configuré les iSCSI Initiator. 
-Il en va de même pour les deux serveurs ESXi.
+Le role Hyper-V permet de manager des machines virtuelles. 
+C'est une solution Windows, elle ne fonctionne qu'avec des VHD (Virtual Hard Disk). 
 
-Finalement, nous avons vérifié le fonctionnement des machines, d'un point de vue réseau, en vérifiant que les pings entre tous les serveurs passaient. 
-
+ESXi est la solution gratuite de virtualisation de VMWare. 
+Pour manager les VMs, le client vSphere Hypervisor doit être installé sur une machine.
 
 \subsection{Règlage du WSUS}
 Le serveur WSUS fonctionnait correctement.
@@ -172,8 +179,14 @@ Ensuite, nous démarrons la VM pour l'installation de base.
 Dès que le système est installé, nous avons appliqué toutes les mises à jour requises depuis le serveur WSUS. 
 Finalement, nous avons exécuté la commande \texttt{sysprep} dans le \textit{cmd}.
 Cette commande modifie des valeurs uniques créées par le système.
-Par exemple, deux serveurs issus du même \textit{template} sans avoir lancé la commande \texttt{sysprep} ne peuvent pas être dans le même domaine, car ils possèdent le même identifiant. 
+Par exemple, deux serveurs issus du même \textit{template} sans avoir lancé la commande \texttt{sysprep} ne peuvent pas être dans le même domaine, car ils possèdent des identifiants identiques. 
 
+\section{Fait Marquant}
+Lors des tests de l'infrastructure de mon TFE, nous sommes tombés sur un problème de connectivité entre une machine distante et un serveur Exchange interne via un tunnel VPN. 
+Ce problème était en cours de résolution chez un client.
+Le fait d'avoir pu recréer cet incident, nous a permis de fournir une solution au client concerné. 
+Comme nous possédions une infrastructure similaire, nous avons pu mener un ensemble de test afin de déterminer le problème.
+Finalement, nous avons trouvé une solution en interne, que nous avons pu transmettre au client et ainsi clôturer l'incident.
 
 \section{Apports du stage}
 J'ai appris énormément de chose pendant ces quatorze semaines de stage aussi bien d'un point de vue technique que humain.
@@ -182,7 +195,6 @@ J'ai appris énormément de chose pendant ces quatorze semaines de stage aussi b
 L'apprentissage des technologies passe par une phase d'étude, puis par la pratique.
 J'ai passé un certain temps à étudier le fonctionnement de divers protocoles liés à la sécurité des données tels que IPSec et SSL/TLS.
 De plus, j'ai du m'habituer au terme technique utilisé au sein de la société.
-Je sais maintenant expliquer un problème technique avec les termes adéquats à un collègue.
 
 \subsection{Compétences techniques acquises}
 Lors de ce stage, j'ai appris à installer des serveurs en suivant de bonnes pratiques, à designer un laboratoire en respectant les règles de "cable management", à configurer des firewalls, des switchs, des passerelles SSL. 
@@ -213,27 +225,26 @@ Ainsi, lors d'un changement d'adressage, il suffit de modifier les propriétés 
 \subsubsection{Passerelle SSL}
 Une passerelle SSL gère les connexions distantes.
 Elle dispose d'un ensemble de règles d'authentification et d'accès pour autoriser ou non une connexion distante.
- 
+
 \subsubsection{EtherChannel}
 L'EtherChannel permet d'assembler d'un point de vue logique plusieurs ports d'un switch pour n'en former qu'un.
 L'un des avantages est une plus grande bande passante, car chaque lien est indépendant de l'autre.
-Ainsi, le système peut utiliser tous les liens pour l'envoi de données ou la réception ou faire un mix entre les deux en fonction de la charge. 
-
-
-\subsubsection{NIC Teaming}
-Le NIC Teaming permet de coupler plusieurs carte réseau en une seule.
-
-\subsubsection{MIP}
-
-
+Ainsi, le système peut utiliser tous les liens pour l'envoi de données ou la réception ou faire un mix entre les deux en fonction de la charge. \\
 
 Ces connaissances m'ont été utile pour mon travail de fin d'études. 
+
+\subsection{Difficultés rencontrées}
+Dans un premier temps, les problèmes étaient surtout d'un niveau théorique vu que je ne connaissais pas toutes les technologies à mettre en place. Avec le temps, ce genre de problème est devenu de plus en plus rare.
+Par contre, les problèmes de configuration et de matériel sont devenus plus fréquents.
+
 \subsection{La vie en société}
 Travailler dans une PME a des avantages pour les relations humaines.
 Il est en effet plus facile de discuter avec l'ensemble des employées.
 
-Au début, j'avais un collègue qui servait de point de contact lorsque j'avais une question.
+Au début, il m'a été assigné un collègue qui servait de point de contact lorsque j'avais une question.
 Mais le métier de consultant implique de se déplacer soit chez un client, soit dans un centre de formation, soit en urgence.
 Il est arrivé que ce collègue part en milieu de journée ou qu'il soit absent une semaine complète pour donner un cours.
-Au lieu de perdre mon temps, j'ai demandé des conseils aux autres collègues présent au bureau. 
+Au lieu de perdre mon temps, j'ai demandé des conseils aux autres collègues présent au bureau.
+C'est ainsi que j'ai remarqué le niveau de compétence de l'ensemble des consultants.
 
+L'ambiance au bureau était bonne, nous pouvions avoir des moments de rigolade, et aussi des moments de travail au calme.
