@@ -1,10 +1,10 @@
-\chapter{Les travaux effectuées et les apports du stage}
+\chapter{Les travaux effectués et les apports du stage}
 Au cours de ce stage, j'ai découvert le métier de consultant IT.
 C'est un métier passionnant et varié.
 Il requiert des capacités polyvalentes, du savoir-faire et de la flexibilité.
 
 Les clients possédant chacun leur business, les problèmes qu'ils rencontrent ne sont jamais identiques.
-Il faut donc maitriser des connaissances dans plusieurs domaines et à plusieurs niveaux.
+Il faut donc maîtriser des connaissances dans plusieurs domaines et à plusieurs niveaux.
 Avant d'être opérationnel, il faut posséder des connaissances théoriques et pratiques en infrastructure réseaux et en systèmes d'exploitation.
 
 Certaines opérations ne peuvent se faire qu'en dehors des heures de bureaux, il est nécessaire de travailler parfois plus tard ou le weekend. 
@@ -15,7 +15,7 @@ En cas d'urgence ou d'incident grave, il faut être prêt à partir pour résoud
 Pour des raisons propres à l'entreprise, il ne m'a pas été possible de travailler directement avec les clients.
 Mais en me plaçant dans l'open space avec les consultants, il m'a été donné l'opportunité d'observer le travail de ces derniers dans la résolution des incidents.
 
-\section{Travaux effectuées}
+\section{Travaux effectués}
 Au cours de mon stage, mon travail a consisté essentiellement à réaliser l'architecture d'un laboratoire de test et à l'étude des connaissances relatives aux firewalls, passerelle SSL, tunnel VPN.
 
 \subsection{Architecture du laboratoire de test}
@@ -33,7 +33,7 @@ Le réseau de production est l'environnement de travail pour les techniciens.
 Sa structure est similaire à celle du laboratoire.
 Il permet aux techniciens de se connecter à distance au réseau d'un client pour y procéder des maintenances, réaliser des interventions afin de résoudre un incident.
 
-Avec l'arrivée des serveurs plus récent, l'utilisation du laboratoire est plus intéressante.
+Avec l'arrivée des serveurs plus récents, l'utilisation du laboratoire est plus intéressante.
 Il est désormais possible de créer une infrastructure complète en virtuel.
 Les nouveaux serveurs possèdent entre seize (16) et vingt-quatre (24) gigaoctet (Go) de RAM.
 Il est donc possible de faire tourner plusieurs machines virtuelles sur un même serveur physique.
@@ -48,11 +48,11 @@ Il est composé d'une quinzaine de serveurs dont des NAS, de plusieurs switchs, 
 Je met une liste du matériel hardware
 \begin{itemize}
 	\item Serveurs HP Proliant DL360 et DL380
-	\item Switch Cisco 3560G, 2960G, 2950
-	\item Firewall Juniper NS25, SSG140
+	\item Switch Cisco 3560G, 2960G, 2950, 3750G
+	\item Firewall Juniper NS25, SSG140, SRX240, SRX100
 	\item Passerelle SSL SA2500
 \end{itemize}
-et une liste des systèmes d'exploitation et software sur lesquelles j'ai travaillé
+et une liste des systèmes d'exploitation et software sur lesquels j'ai travaillé
 \begin{itemize}
 	\item Windows Server 2008R2, 2012 et 2012R2
 	\item Windows Client Vista, 7, 8 Professional et Enterprise
@@ -66,12 +66,12 @@ et une liste des systèmes d'exploitation et software sur lesquelles j'ai travai
 \subsubsection{Design du laboratoire}
 Dans un premier temps, un collègue m'a présenté le schéma logique du nouveau plan du laboratoire.
 Sur base de ce plan, nous avons exploré l'ensemble des technologies à mettre en place.
-Ce plan prévoyait la création de deux sous-réseau à l'intérieur du réseau de laboratoire.
+Ce plan prévoyait la création de deux sous-réseaux à l'intérieur du réseau de laboratoire.
 Pour créer ces sous-réseaux, nous avons configuré deux firewalls NetScreen 25 de Juniper. 
 Il prévoyait également des connexions iSCSI entre les serveurs et les disques virtuels de stockage sur les NAS.
 
 Le laboratoire est composé de quatre racks, le rack 4 est réservé aux connexions vers la salle de production et vers l'open-space.
-Nous avons décidé de placer les serveurs dans le rack 1 et la matériel réseau dans le rack 2.
+Nous avons décidé de placer les serveurs dans le rack 1 et le matériel réseau dans le rack 2.
 Le rack 3 contient des Access Point pour le labo et accueille une solution Voice de Cisco depuis peu.
 
 \subsubsection{(Dés)Installation des serveurs}
@@ -95,9 +95,9 @@ Pour les serveurs, les manipulations étaient simples.
 Il suffisait de débrancher tous les câbles du serveur.
 Ensuite de l'enlever des rails et d'enlever ces derniers du rack pour récupérer l'espace.
 Pour placer les nouveaux, nous placions le rail en premier, puis le serveur dessus.
-Le câblage des serveurs s'est fait un peu plus tard, car nous devions vérifier le nombre de connecteur réseau. 
+Le câblage des serveurs s'est fait un peu plus tard, car nous devions vérifier le nombre de connecteurs réseau. 
 
-En effet, nous avons crée des EtherChannel quand c'était possible.
+En effet, nous avons créé des EtherChannel quand c'était possible.
 Pour créer les EtherChannel, nous avons configuré le NIC Teaming sur les serveurs en mode LACP.
 Nous avons aussi configuré les ports sur le switch afin de gérer les EtherChannel.
  
@@ -136,7 +136,7 @@ Les mises à jour ont été effectuées à l'aide d'une WebApp de HP.
 
 Le laboratoire ne gère pas les domaines Active Directory, car son fonctionnement n'est pas compatible avec l'utilisation que l'on fait du labo. 
 Les machines que nous installons, en virtuel ou physiquement, ont des durées de vie limitées.
-Elles restent active entre une semaine et un mois.
+Elles restent actives entre une semaine et un mois.
 
 \subsubsection{Plan d'adressage}
 Sur base du classement, j'ai aussi défini le plan d'adressage des serveurs (voir Tab.\ref{tab:addIP} p.\pageref{tab:addIP}).
@@ -176,7 +176,7 @@ C'est une solution Windows, elle ne fonctionne qu'avec des VHD (Virtual Hard Dis
 ESXi est la solution gratuite de virtualisation de VMWare. 
 Pour manager les VMs, le client vSphere Hypervisor doit être installé sur une machine.
 
-\subsection{Règlage du WSUS}
+\subsection{Réglage du WSUS}
 Le serveur WSUS fonctionnait correctement.
 Mais pour le rendre accessible aux machines, nous avons dû modifier une valeur du registre windows.
 Ce changement de valeur est à réaliser sur toutes les machines qui vont utiliser le serveur WSUS.
@@ -216,7 +216,7 @@ Il m'a été fourni le matériel nécessaire à la réalisation de cette infrast
 Lors des tests de l'infrastructure de mon TFE, nous sommes tombés sur un problème de connectivité entre une machine distante et un serveur Exchange interne via un tunnel VPN. 
 Ce problème s'était posé chez un client et était en cours de traitement par l'un de mes collègues.
 Le fait d'avoir pu recréer cet incident, nous a permis de fournir une solution au client concerné. 
-Comme nous possédions une infrastructure similaire, nous avons pu mener un ensemble de test afin de déterminer le problème.
+Comme nous possédions une infrastructure similaire, nous avons pu mener un ensemble de tests afin de déterminer le problème.
 Nous avons commencé par vérifier l'état du tunnel VPN.
 Tout semblait correct, la connexion s'établissait dans le mode ESP.
 Et si cette connexion échouait pour une raison quelconque, le système essayait d'établir la connexion en SSL.
@@ -236,12 +236,12 @@ Par contre, cette solution n'est pas optimale car l'utilisation de ESP n'est pas
 Afin de ne pas créer un nouvel incident, nous sommes passés à des tunnels SSL. 
 
 \section{Apports du stage}
-J'ai appris énormément de chose pendant ces quatorze semaines de stage aussi bien d'un point de vue technique que humain.
+J'ai appris énormément de choses pendant ces quatorze semaines de stage aussi bien d'un point de vue technique que humain.
 
-\subsection{Compétences théorique acquises}
+\subsection{Compétences théoriques acquises}
 L'apprentissage des technologies passe par une phase d'étude, puis par la pratique.
 J'ai passé un certain temps à étudier le fonctionnement de divers protocoles liés à la sécurité des données tels que IPSec et SSL/TLS.
-De plus, j'ai du m'habituer au terme technique utilisé au sein de la société.
+De plus, j'ai du m'habituer aux termes techniques utilisés au sein de la société.
 
 \subsection{Compétences techniques acquises}
 Lors de ce stage, j'ai appris à installer des serveurs en suivant de bonnes pratiques, à concevoir un laboratoire en respectant les règles de "cable management", à configurer des firewalls, des switchs, des passerelles SSL. 
@@ -251,12 +251,12 @@ Il me semble utile de commencer par la base d'une infrastructure.
 Par la suite, il est intéressant d'expliquer des éléments plus techniques tels que un firewall et une passerelle SSL. 
 \subsubsection{Infrastructure Windows}
 Une infrastructure professionnelle en Windows possède au minimum un serveur Active Directory (AD) avec le rôle Domain Controller (DC) et un serveur Exchange. 
-L'utilisation d'Exchange requiert l'utilisation de certificat, il est donc nécessaire d'ajouter le rôle Certificate Services (CS) à l'AD.
+L'utilisation d'Exchange requiert l'utilisation de certificats, il est donc nécessaire d'ajouter le rôle Certificate Services (CS) à l'AD.
 
 La gestion des certificats est un peu complexe au premier abord.
 Un collègue a pris le temps de m'expliquer le rôle d'une autorité de certification (CA) et comment créer une requête pour un serveur auprès du CA. 
 
-Pour le stockage entre les serveurs et les NAS, la meilleur solution consiste à utiliser des disques iSCSI.
+Pour le stockage entre les serveurs et les NAS, la meilleure solution consiste à utiliser des disques iSCSI.
 La nomenclature iSCSI est assez lourde, mais son fonctionnement est simple. 
 Il suffit de créer un espace de stockage dynamique ou statique que l'on associe comme iSCSI Target. 
 Ensuite, les clients, appelés iSCSI Initiator, se connectent aux disques cibles. 
@@ -265,8 +265,8 @@ L'avantage d'un disque iSCSI est qu'il est visible par le système d'exploitatio
 
 \subsubsection{Firewall Juniper}
 Une notion essentielle de la gestion des firewalls Juniper est celle de Virtual Router.
-Dans un firewall Juniper, les zones de confiances et les zones de non-confiances sont isolées l'une de l'autre.
-C'est comme si on avait deux routeurs connectés l'un à l'autre dont l'un distribue les routes pour la zone de confiance et l'autre fait de même pour les zones de non-confiances.
+Dans un firewall Juniper, les zones de confiance et les zones de non-confiance sont isolées l'une de l'autre.
+C'est comme si on avait deux routeurs connectés l'un à l'autre dont l'un distribue les routes pour la zone de confiance et l'autre fait de même pour les zones de non-confiance.
 Pour que du trafic passe entre les deux routeurs, les routes doivent être configurées manuellement.
 
 En plus des routes, les firewalls se basent sur l'utilisation de Policies pour filtrer le trafic.
@@ -287,13 +287,13 @@ Ces connaissances m'ont été utiles pour mon travail de fin d'études.
 \subsection{Difficultés rencontrées}
 Dans un premier temps, les problèmes étaient surtout d'un niveau théorique vu que je ne connaissais pas toutes les technologies à mettre en place. Avec le temps, ce genre de problème est devenu de plus en plus rare.
 Par contre, les problèmes de configuration et de matériel sont devenus plus fréquents.
-Par la pratique certaines difficultés ont disparu ou sont devenus évitables. 
+Par la pratique, certaines difficultés ont disparu ou sont devenues évitables. 
 
 \subsection{La vie en société}
 Travailler dans une PME a des avantages pour les relations humaines.
-Il est en effet plus facile de discuter avec l'ensemble des employées.
+Il est en effet plus facile de discuter avec l'ensemble des employés.
 
-Mon intégration s'est bien déroulé. 
+Mon intégration s'est bien déroulée. 
 Ma place dans l'open space m'a permis de côtoyer mes collègues en permanence.
 Mon bureau était à côté de celui d'un technicien et en face du commerciale.
 Il y avait toujours au moins un technicien au bureau pour répondre à la hotline.

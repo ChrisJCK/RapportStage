@@ -8,6 +8,8 @@
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{chngcntr}
 
 %----------------------------------------------------------------------------------------
 %Mise en page
@@ -16,7 +18,31 @@
 				   left=20mm,
 				   top=25mm,
 				   right=15mm,
-				   bottom=25mm}
+				   bottom=25mm,
+				   headheight=13.6pt}
+				   %----------------------------------------------------------------------------------------
+% Création du style 
+%----------------------------------------------------------------------------------------
+\fancypagestyle{EPHEC}{%
+  \fancyhf{}% Clear header and footer
+  \fancyhead[R]{\thepage}% Custom header
+  \fancyhead[L]{Juckler Christian}
+  \fancyhead[C]{Rapport de stage}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}}
+  
+%----------------------------------------------------------------------------------------
+%Redéfinition du style plain
+%----------------------------------------------------------------------------------------
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[R]{\thepage}%
+  \fancyhead[L]{Juckler Christian}
+  \fancyhead[C]{Rapport de stage}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}}
+
+\pagestyle{EPHEC}
 
 
 \begin{document}
